@@ -1,0 +1,211 @@
+<ns0:record xmlns:ns0="http://www.openarchives.org/OAI/2.0/" xmlns:ns1="http://jats.nlm.nih.gov" xmlns:ns3="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<ns0:header>
+    <ns0:identifier>oai:numdam.org:MSH_1994__125__5_0</ns0:identifier>
+    <ns0:datestamp>2025-07-21</ns0:datestamp>
+    <ns0:setSpec>NUMDAM</ns0:setSpec>
+    <ns0:setSpec>MSH</ns0:setSpec>
+
+</ns0:header>
+
+<ns0:metadata>
+
+<ns1:article xml:lang="fr" article-type="normal" xsi:schemaLocation="http://jats.nlm.nih.gov http://eudml.org/schema/2.0/eudml-article-2.0.xsd">
+
+<ns1:front>
+<ns1:journal-meta>
+<ns1:journal-id journal-id-type="mathdoc-id">MSH</ns1:journal-id>
+<ns1:journal-title-group><ns1:journal-title>Mathématiques informatique et sciences humaines</ns1:journal-title></ns1:journal-title-group>
+<ns1:issn pub-type="ppub">0995-2314</ns1:issn>
+
+
+    <ns1:publisher>
+<ns1:publisher-name>Ecole des hautes-études en sciences sociales</ns1:publisher-name>
+
+</ns1:publisher>
+
+
+</ns1:journal-meta>
+
+<ns1:article-meta>
+
+
+
+<ns1:article-id pub-id-type="mathdoc-id">MSH_1994__125__5_0</ns1:article-id>
+
+
+
+<ns1:title-group><ns1:article-title>Un algorithme de partition d'un produit direct d'ordres totaux en un nombre minimum de chaînes</ns1:article-title></ns1:title-group>
+
+
+
+
+
+
+    <ns1:contrib-group content-type="authors">
+
+        <ns1:contrib><ns1:name>
+                <ns1:surname>Pichon</ns1:surname>
+                <ns1:given-names>Emmanuel</ns1:given-names>
+              </ns1:name></ns1:contrib>
+
+        <ns1:contrib><ns1:name>
+                <ns1:surname>Lenca</ns1:surname>
+                <ns1:given-names>Philippe</ns1:given-names>
+              </ns1:name><ns1:contrib-id contrib-id-type="idref">057147248</ns1:contrib-id></ns1:contrib>
+
+        <ns1:contrib><ns1:name>
+                <ns1:surname>Guillet</ns1:surname>
+                <ns1:given-names>Fabrice</ns1:given-names>
+              </ns1:name></ns1:contrib>
+
+        <ns1:contrib><ns1:name>
+                <ns1:surname>Wang</ns1:surname>
+                <ns1:given-names>Jian Wei</ns1:given-names>
+              </ns1:name></ns1:contrib>
+    </ns1:contrib-group>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ns1:volume>125</ns1:volume>
+
+
+<ns1:issue-id pub-id-type="mathdoc-id">MSH_1994__125_</ns1:issue-id>
+
+
+
+
+
+<ns1:fpage>5</ns1:fpage>
+<ns1:lpage>15</ns1:lpage>
+
+
+
+
+<ns1:ext-link ext-link-type="mr-item-id" ns3:href="https://mathscinet.ams.org/mathscinet-getitem?mr=1281944">1281944</ns1:ext-link>
+<ns1:ext-link ext-link-type="zbl-item-id" ns3:href="https://zbmath.org/?q=an:0802.06001">0802.06001</ns1:ext-link>
+
+
+
+
+
+    <ns1:self-uri ns3:href="https://www.numdam.org/item/MSH_1994__125__5_0/">Access to full text</ns1:self-uri>
+
+
+            <ns1:self-uri content-type="application/pdf" ns3:href="https://www.numdam.org/item/MSH_1994__125__5_0.pdf">Full (PDF)</ns1:self-uri>
+
+
+
+            <ns1:self-uri content-type="image/x.djvu" ns3:href="https://www.numdam.org/item/MSH_1994__125__5_0.djvu">Full (DJVU)</ns1:self-uri>
+
+
+
+
+
+
+
+
+<ns1:abstract>
+            <ns1:p xml:space="preserve">Cette étude s'inscrit dans un prolongement algorithmique d'un travail de Bruno Leclerc, publié dans cette revue, qui discute de la taille maximum d'une antichaîne dans un produit direct P d'ordres totaux. On y présente un algorithme de partitionnement de P en un nombre minimum de chaînes. Enfin, on décrit brièvement une application à l'extraction de connaissance.</ns1:p>
+          </ns1:abstract>
+<ns1:trans-abstract xml:lang="en">
+            <ns1:p xml:space="preserve">This paper concerns an algorithmic extension of a work by Bruno Leclerc published in this Journal. He discusses the maximum cardinality of an antichain in the direct product P of linear orders. We present an algorithm for partitioning P into a minimum number of chains. We also briefly describe an application in the field of knowledge extraction.</ns1:p>
+          </ns1:trans-abstract>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ns1:article-meta>
+</ns1:front>
+
+
+ <ns1:back>
+
+
+
+
+  <ns1:ref-list><ns1:ref><ns1:mixed-citation xml:space="preserve">[1] <ns1:string-name xml:space="preserve"><ns1:surname>Anderson</ns1:surname> <ns1:given-names>I.</ns1:given-names></ns1:string-name>, <ns1:article-title xml:space="preserve">Combinatorics of Finite sets</ns1:article-title>, <ns1:publisher-loc>Oxford</ns1:publisher-loc>, <ns1:publisher-name>Clarendon press</ns1:publisher-name>,<ns1:year>1987</ns1:year>.<ns1:ext-link ext-link-type="zbl-item-id">0604.05001</ns1:ext-link><ns1:ext-link ext-link-type="mr-item-id">892525</ns1:ext-link></ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve"> [2] <ns1:string-name xml:space="preserve"><ns1:surname>Barthelemy</ns1:surname> <ns1:given-names>J.P.</ns1:given-names></ns1:string-name>, <ns1:string-name xml:space="preserve"><ns1:surname>Mullet</ns1:surname> <ns1:given-names>E.</ns1:given-names></ns1:string-name>, "<ns1:article-title xml:space="preserve">Choice basis: A model for multi-attribute preference</ns1:article-title>", <ns1:source>British journal of Mathematical and Statistical Psychology</ns1:source>, <ns1:volume>39</ns1:volume> (<ns1:year>1986</ns1:year>), p. <ns1:fpage>106</ns1:fpage>-<ns1:lpage>124</ns1:lpage>.<ns1:ext-link ext-link-type="zbl-item-id">0606.62129</ns1:ext-link><ns1:ext-link ext-link-type="mr-item-id">966946</ns1:ext-link></ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve"> [3] <ns1:string-name xml:space="preserve"><ns1:surname>Barthelemy</ns1:surname> <ns1:given-names>J.P.</ns1:given-names></ns1:string-name>, <ns1:string-name xml:space="preserve"><ns1:surname>Mullet</ns1:surname> <ns1:given-names>E.</ns1:given-names></ns1:string-name> (<ns1:year>1992</ns1:year>), "<ns1:article-title xml:space="preserve">A model of selection by aspects</ns1:article-title>", <ns1:source>Acta Psychologica</ns1:source>, <ns1:volume>79</ns1:volume>, <ns1:fpage>1</ns1:fpage>-<ns1:lpage>19</ns1:lpage>.</ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve"> [4] <ns1:string-name xml:space="preserve"><ns1:surname>Behrendt</ns1:surname> <ns1:given-names>G.</ns1:given-names></ns1:string-name>, "<ns1:article-title xml:space="preserve">The lattice of antichain cutsets of a partially ordered set</ns1:article-title>", <ns1:source>Discrete math.</ns1:source>, <ns1:volume>89</ns1:volume> (<ns1:year>1991</ns1:year>), p. <ns1:fpage>201</ns1:fpage>-<ns1:lpage>202</ns1:lpage>.<ns1:ext-link ext-link-type="zbl-item-id">0731.06002</ns1:ext-link><ns1:ext-link ext-link-type="mr-item-id">1107635</ns1:ext-link></ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve">[5] <ns1:string-name xml:space="preserve"><ns1:surname>D</ns1:surname> <ns1:given-names>N.G.</ns1:given-names></ns1:string-name>, <ns1:string-name xml:space="preserve"><ns1:surname>Tengbergen</ns1:surname> <ns1:given-names>C.</ns1:given-names></ns1:string-name>, <ns1:string-name xml:space="preserve"><ns1:surname>Kruyswijk</ns1:surname> <ns1:given-names>D.</ns1:given-names></ns1:string-name>, "<ns1:article-title xml:space="preserve">On the set of divisors of a number</ns1:article-title>", <ns1:source>Nieuw Arch. Wiskd.</ns1:source>, <ns1:volume>23</ns1:volume> (<ns1:year>1951</ns1:year>), p. <ns1:fpage>191</ns1:fpage>-<ns1:lpage>193</ns1:lpage>.<ns1:ext-link ext-link-type="zbl-item-id">0043.04301</ns1:ext-link><ns1:ext-link ext-link-type="mr-item-id">43115</ns1:ext-link></ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve">[6] <ns1:string-name xml:space="preserve"><ns1:surname>Leclerc</ns1:surname> <ns1:given-names>B.</ns1:given-names></ns1:string-name>, "<ns1:article-title xml:space="preserve">Sur le nombre d'éléments des niveaux des produits de chaînes et des treillis permutoèdres</ns1:article-title>", <ns1:source>Math. Inf. Sci. Hum.</ns1:source>, <ns1:volume>112</ns1:volume> (<ns1:year>1990</ns1:year>), p. <ns1:fpage>37</ns1:fpage>-<ns1:lpage>48</ns1:lpage>.<ns1:ext-link ext-link-type="zbl-item-id">0787.06001</ns1:ext-link><ns1:ext-link ext-link-type="mr-item-id">1096919</ns1:ext-link><ns1:ext-link ext-link-type="numdam-id">MSH_1990__112__37_0</ns1:ext-link></ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve">[7] <ns1:string-name xml:space="preserve"><ns1:surname>Mullet</ns1:surname> <ns1:given-names>E.</ns1:given-names></ns1:string-name>, <ns1:article-title xml:space="preserve">L'intégration des informations dans le jugement et la décision</ns1:article-title>, Thèse de Doctorat d'Etat (<ns1:year>1985</ns1:year>), <ns1:publisher-name>Université René Descartes, Sciences Humaines</ns1:publisher-name>, <ns1:publisher-loc>Sorbonne</ns1:publisher-loc>.</ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve"> [8] <ns1:string-name xml:space="preserve"><ns1:surname>Griggs</ns1:surname> <ns1:given-names>J.R.</ns1:given-names></ns1:string-name>, "<ns1:article-title xml:space="preserve">Maximum antichains in the product of chains</ns1:article-title> ", <ns1:source>Order</ns1:source>, <ns1:volume>1</ns1:volume> (<ns1:year>1984</ns1:year>), p. <ns1:fpage>21</ns1:fpage>-<ns1:lpage>28</ns1:lpage>.<ns1:ext-link ext-link-type="zbl-item-id">0561.06003</ns1:ext-link><ns1:ext-link ext-link-type="mr-item-id">745586</ns1:ext-link></ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve"> [9] <ns1:string-name xml:space="preserve"><ns1:surname>Griggs</ns1:surname> <ns1:given-names>J.R.</ns1:given-names></ns1:string-name>, "<ns1:article-title xml:space="preserve">Problems on chain partitions</ns1:article-title>", <ns1:source>Discrete Math.</ns1:source>, <ns1:volume>72</ns1:volume> (<ns1:year>1988</ns1:year>), p.<ns1:fpage>157</ns1:fpage>-<ns1:lpage>162</ns1:lpage>.<ns1:ext-link ext-link-type="zbl-item-id">0665.06003</ns1:ext-link><ns1:ext-link ext-link-type="mr-item-id">975534</ns1:ext-link></ns1:mixed-citation></ns1:ref><ns1:ref><ns1:mixed-citation xml:space="preserve"> [10] <ns1:string-name xml:space="preserve"><ns1:surname>Sands</ns1:surname> <ns1:given-names>B.</ns1:given-names></ns1:string-name>, "<ns1:article-title xml:space="preserve">Counting antichains in finite partially ordered sets</ns1:article-title>", <ns1:source>Discrete Math.</ns1:source>, <ns1:volume>35</ns1:volume> (<ns1:year>1981</ns1:year>), p. <ns1:fpage>213</ns1:fpage>-<ns1:lpage>228</ns1:lpage>.<ns1:ext-link ext-link-type="zbl-item-id">0463.06002</ns1:ext-link><ns1:ext-link ext-link-type="mr-item-id">620674</ns1:ext-link></ns1:mixed-citation></ns1:ref></ns1:ref-list>
+
+
+
+ </ns1:back>
+
+
+
+</ns1:article>
+
+
+</ns0:metadata>
+
+    </ns0:record>

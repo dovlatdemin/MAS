@@ -9,12 +9,14 @@
 - Отправка на почту в тестовом режиме отключена.
 """
 
-import subprocess
 from pathlib import Path
+from datetime import date
 
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
+import numdam_agent
+from numdam_index import NumdamIndex
 
 # Импорт основной функции обработки из main.py (файлы лежат в одной папке).
 from main import process_items
@@ -99,6 +101,73 @@ def _provider_input(label: str, name: str, field: str, **kwargs):
         st.session_state[key] = st.session_state["provider_drafts"][name].get(field) or ""
     st.text_input(label, key=key, **kwargs)
 
+
+@st.cache_resource
+def _numdam_job(path):
+    return numdam_agent.SyncJob(path)
+
+
+@st.fragment(run_every=2)
+def render_numdam_index():
+    st.header("Индекс NUMDAM")
+    st.caption("Поиск BM25 работает по сохранённым названиям, аннотациям и ключевым словам. "
+               "Сначала загрузите метаданные; последующие поиски используют локальный индекс.")
+    path = str(numdam_agent.settings()["db_path"])
+    index = NumdamIndex(path)
+    state = index.status()
+    job = _numdam_job(path)
+    runtime = job.snapshot()
+    # A fragment rerun must also refresh the sidebar and the search button when
+    # the first page arrives or the catalogue finishes importing.
+    readiness = (path, state["count"], state.get("complete"), state.get("pending"))
+    previous = st.session_state.get("numdam_index_readiness")
+    st.session_state["numdam_index_readiness"] = readiness
+    if previous is not None and previous != readiness:
+        st.rerun()
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Статей в индексе", state["count"])
+    c2.metric("Без аннотации", state["no_abstract"])
+    c3.metric("Год неизвестен", state["unknown_years"])
+    st.caption("Последняя успешная синхронизация: " + (state.get("last_success") or "ещё не завершалась"))
+    if not state["count"]:
+        st.info("Индекс пуст. Запустите синхронизацию, чтобы искать статьи NUMDAM.")
+    elif not state.get("complete"):
+        st.warning("Индекс заполнен частично. Поиск охватывает только загруженные статьи.")
+    elif state.get("pending"):
+        st.warning("Полный каталог был загружен ранее; текущее обновление ещё не завершено.")
+    else:
+        st.success("Импорт каталога завершён. Доступен поиск по всем проиндексированным статьям.")
+    streams = state.get("streams", {})
+    if streams:
+        names = {"articles": "Статьи и аннотации", "dates": "Годы публикаций"}
+        for name, cursor in streams.items():
+            st.caption(f"{names[name]}: обработано {cursor['processed']} из {cursor.get('total') or '?'} записей")
+        if all(cursor.get("total") is not None for cursor in streams.values()):
+            total = sum(cursor["total"] for cursor in streams.values())
+            done = sum(cursor["processed"] for cursor in streams.values())
+            st.progress(min(1.0, done / total) if total else 1.0)
+    if runtime["running"]:
+        st.info("Остановка после текущей страницы…" if runtime["stopping"] else
+                "Синхронизация выполняется в фоне. Можно искать по уже сохранённым данным.")
+    elif state.get("pending") and not (runtime["error"] or state.get("error")):
+        st.caption("Сохранена позиция импорта. Следующий запуск продолжит загрузку.")
+    if runtime["error"] or state.get("error"):
+        st.error(runtime["error"] or state["error"])
+    limited = st.checkbox("Ограниченный импорт для проверки", value=True, disabled=runtime["running"], key="numdam_limited")
+    max_pages = None
+    if limited:
+        max_pages = int(st.number_input("Максимум страниц API за запуск", min_value=1, max_value=1000,
+                                       value=2, disabled=runtime["running"], key="numdam_pages",
+                                       help="Два формата загружаются по очереди: одна страница статей, одна — годов публикации."))
+    else:
+        st.caption("Будет загружен весь каталог или завершено его обновление. Загрузку можно остановить и продолжить.")
+    if st.button("Синхронизировать метаданные", type="primary", disabled=runtime["running"], key="numdam_sync"):
+        job.start(max_pages=max_pages)
+        st.rerun()
+    if st.button("Остановить после текущей страницы", disabled=not runtime["running"], key="numdam_stop"):
+        job.stop()
+        st.rerun()
+
 st.set_page_config(
     page_title="Трекер публикаций",
     page_icon="📚",
@@ -145,10 +214,12 @@ with st.sidebar:
         ),
     )
 
+    has_recent_sources = any(sid != "numdam" for sid in sources)
     period = st.selectbox(
-        "Диапазон дат",
+        "Даты archive.org и arXiv",
         options=["week", "month", "custom"],
         index=0,
+        disabled=not has_recent_sources,
         format_func=lambda key: {
             "week": "Неделя",
             "month": "Месяц",
@@ -162,20 +233,44 @@ with st.sidebar:
     )
     if period == "custom":
         default_from, default_to = resolve_date_range(preset="week")
-        date_from = st.date_input("С", value=default_from)
-        date_to = st.date_input("По", value=default_to)
+        date_from = st.date_input("С", value=default_from, disabled=not has_recent_sources)
+        date_to = st.date_input("По", value=default_to, disabled=not has_recent_sources)
     else:
         date_from, date_to = resolve_date_range(preset=period)
         st.caption(
             f"{date_from.strftime('%d.%m.%Y')} — {date_to.strftime('%d.%m.%Y')}"
         )
-    dates_ok = bool(date_from and date_to and date_from <= date_to)
+    dates_ok = not has_recent_sources or bool(date_from and date_to and date_from <= date_to)
     if not dates_ok:
         st.warning("Дата «С» должна быть не позже даты «По».")
 
+    numdam_options = {}
+    numdam_years_ok = True
+    numdam_ready = True
+    if "numdam" in sources:
+        st.subheader("NUMDAM · BM25")
+        st.caption("Лексический поиск по метаданным; результаты NUMDAM упорядочены по релевантности.")
+        all_years = st.checkbox("Все годы NUMDAM", value=True, key="numdam_all_years")
+        if not all_years:
+            year_from = int(st.number_input("Год с", min_value=1, max_value=9999, value=1900, key="numdam_year_from"))
+            year_to = int(st.number_input("Год по", min_value=1, max_value=9999, value=date.today().year, key="numdam_year_to"))
+            numdam_options.update(year_from=year_from, year_to=year_to)
+            numdam_years_ok = year_from <= year_to
+            if not numdam_years_ok:
+                st.warning("Год «с» должен быть не позже года «по».")
+        numdam_options["include_unknown_year"] = st.checkbox("Включать статьи с неизвестным годом", value=True,
+            key="numdam_unknown_year", help="Такие статьи будут включены даже при ограничении диапазона годов.")
+        numdam_state = NumdamIndex(numdam_agent.settings()["db_path"]).status()
+        numdam_ready = numdam_state["count"] > 0
+        if not numdam_ready:
+            st.info("Откройте вкладку «Индекс NUMDAM» и загрузите метаданные.")
+        elif not numdam_state.get("complete"):
+            st.warning(f"Частичный индекс: {numdam_state['count']} статей. Продолжить загрузку можно на вкладке «Индекс NUMDAM».")
+
     rows = st.slider(
-        "Сколько последних записей запрашивать",
+        "Количество результатов с источника",
         min_value=5, max_value=100, value=20, step=5,
+        help="Для NUMDAM — лучшие совпадения BM25. Для archive.org и arXiv — лимит запрашиваемых записей.",
     )
 
     st.subheader("Резюме")
@@ -199,9 +294,9 @@ with st.sidebar:
         ),
     )
     text_limit = st.slider(
-        "Лимит текста страницы (символов)",
+        "Лимит текста для резюме (символов)",
         min_value=500, max_value=10000, value=2000, step=500,
-        help="Сколько символов текста со страницы передавать агенту-суммаризатору.",
+        help="Сколько символов аннотации или текста страницы передавать суммаризатору. NUMDAM использует только аннотацию.",
     )
 
     st.subheader("История")
@@ -250,19 +345,23 @@ with st.sidebar:
 # ---------------------------------------------------------------------------
 st.title("📚 Трекер публикаций")
 st.caption(
-    "Мульти-агентная система: скрапер → валидатор → извлечение текста → суммаризатор. "
+    "Поиск публикаций в выбранных источниках и создание резюме. "
     "🧪 Тестовый режим: письма не отправляются."
 )
 
-tab_search, tab_providers, tab_diagram = st.tabs(
-    ["🔎 Поиск", "🤖 Провайдеры", "🗺 Схема агентов"]
+tab_search, tab_index, tab_providers, tab_diagram = st.tabs(
+    ["🔎 Поиск", "🗃 Индекс NUMDAM", "🤖 Провайдеры", "🗺 Схема агентов"]
 )
+
+with tab_index:
+    render_numdam_index()
 
 with tab_search:
     run = st.button(
         "🚀 Запустить поиск сейчас",
+        key="run_search",
         type="primary",
-        disabled=not topics or not sources or not dates_ok,
+        disabled=not topics or not sources or not dates_ok or not numdam_years_ok or (not has_recent_sources and not numdam_ready),
     )
     if not topics:
         st.warning("Укажите хотя бы одну тему в боковой панели.")
@@ -287,10 +386,12 @@ with tab_search:
                     llm=_active_llm() or None,
                     date_from=date_from,
                     date_to=date_to,
+                    numdam_options=numdam_options,
                     send=False,  # пока только вывод в интерфейс
                 )
                 st.session_state["run_error"] = None
                 st.session_state["llm_notice"] = process_items.last_llm_notice
+                st.session_state["source_errors"] = process_items.last_source_errors
             except Exception as e:
                 st.session_state["results"] = []
                 st.session_state["run_error"] = str(e)
@@ -299,6 +400,8 @@ with tab_search:
         st.error(f"Ошибка при обработке: {st.session_state['run_error']}")
     if st.session_state.get("llm_notice"):
         st.warning(st.session_state["llm_notice"])
+    for source_error in st.session_state.get("source_errors", []):
+        st.warning(source_error)
 
     results = st.session_state.get("results")
     if results is not None and not st.session_state.get("run_error"):
@@ -326,6 +429,15 @@ with tab_search:
                         st.markdown(f"🔗 [{r['url']}]({r['url']})")
                         st.markdown(f"**Источник:** {src}")
                         st.markdown(f"**Идентификатор:** `{r['identifier']}`")
+                        if r.get("source") == "numdam":
+                            st.write("Авторы:", r.get("authors") or "не указаны")
+                            st.write("Год:", r.get("publication_year") or "неизвестен")
+                            st.write("Журнал:", r.get("journal") or "не указан")
+                            st.write(f"Оценка BM25: {r['bm25_score']:.6g}")
+                            st.caption("Больше — релевантнее для этого запроса. Оценка не является вероятностью или процентом.")
+                            st.write("Совпавшие термины:", ", ".join(r.get("matched_terms", [])))
+                            st.markdown("**Аннотация:**")
+                            st.write(r.get("abstract") or "Аннотация отсутствует в метаданных.")
                         st.markdown("**Резюме:**")
                         if r.get("summary"):
                             st.write(r["summary"])
@@ -341,6 +453,11 @@ with tab_search:
                         "url": "Ссылка",
                         "summary": "Резюме",
                         "status": "Статус",
+                        "authors": "Авторы",
+                        "publication_year": "Год",
+                        "journal": "Журнал",
+                        "abstract": "Аннотация",
+                        "bm25_score": "BM25",
                     }
                 )
                 if "Источник" in df.columns:
@@ -352,6 +469,8 @@ with tab_search:
                     use_container_width=True,
                     hide_index=True,
                     column_config={"Ссылка": st.column_config.LinkColumn("Ссылка")},
+                    column_order=[col for col in ("Источник", "Название", "Авторы", "Год", "Журнал", "BM25",
+                                                  "Ссылка", "Аннотация", "Резюме", "Статус") if col in df.columns],
                 )
     elif results is None:
         st.info("Нажмите «Запустить поиск сейчас», чтобы агенты выполнили один цикл обработки.")
@@ -360,8 +479,8 @@ with tab_search:
         log_path = Path(__file__).parent / "main.log"
         if log_path.exists():
             try:
-                tail = subprocess.check_output(["tail", "-n", "20", str(log_path)])
-                st.text(tail.decode())
+                tail = log_path.read_text(encoding="utf-8", errors="replace").splitlines()[-20:]
+                st.text("\n".join(tail))
             except Exception as exc:
                 st.warning(f"Не удалось прочитать файл журнала: {exc}")
         else:

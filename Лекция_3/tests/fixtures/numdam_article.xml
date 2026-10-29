@@ -1,0 +1,188 @@
+<ns0:record xmlns:ns0="http://www.openarchives.org/OAI/2.0/" xmlns:ns1="http://jats.nlm.nih.gov" xmlns:ns3="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+<ns0:header>
+    <ns0:identifier>oai:numdam.org:MSH_1994__126__5_0</ns0:identifier>
+    <ns0:datestamp>2025-07-21</ns0:datestamp>
+    <ns0:setSpec>NUMDAM</ns0:setSpec>
+    <ns0:setSpec>MSH</ns0:setSpec>
+
+</ns0:header>
+
+<ns0:metadata>
+
+<ns1:article xml:lang="fr" article-type="normal" xsi:schemaLocation="http://jats.nlm.nih.gov http://eudml.org/schema/2.0/eudml-article-2.0.xsd">
+
+<ns1:front>
+<ns1:journal-meta>
+<ns1:journal-id journal-id-type="mathdoc-id">MSH</ns1:journal-id>
+<ns1:journal-title-group><ns1:journal-title>Mathématiques informatique et sciences humaines</ns1:journal-title></ns1:journal-title-group>
+<ns1:issn pub-type="ppub">0995-2314</ns1:issn>
+
+
+    <ns1:publisher>
+<ns1:publisher-name>Ecole des hautes-études en sciences sociales</ns1:publisher-name>
+
+</ns1:publisher>
+
+
+</ns1:journal-meta>
+
+<ns1:article-meta>
+
+
+
+<ns1:article-id pub-id-type="mathdoc-id">MSH_1994__126__5_0</ns1:article-id>
+
+
+
+<ns1:title-group><ns1:article-title>Avant-propos</ns1:article-title></ns1:title-group>
+
+
+
+
+
+
+    <ns1:contrib-group content-type="authors">
+
+        <ns1:contrib><ns1:name>
+                <ns1:surname>Rouanet</ns1:surname>
+                <ns1:given-names>H.</ns1:given-names>
+              </ns1:name><ns1:name-alternatives>
+                <ns1:string-name specific-use="index">Rouanet, Henry</ns1:string-name>
+              </ns1:name-alternatives><ns1:contrib-id contrib-id-type="idref">028296982</ns1:contrib-id></ns1:contrib>
+    </ns1:contrib-group>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ns1:volume>126</ns1:volume>
+
+
+<ns1:issue-id pub-id-type="mathdoc-id">MSH_1994__126_</ns1:issue-id>
+
+
+
+
+
+<ns1:fpage>5</ns1:fpage>
+<ns1:lpage>5</ns1:lpage>
+
+
+
+
+
+
+
+
+
+    <ns1:self-uri ns3:href="https://www.numdam.org/item/MSH_1994__126__5_0/">Access to full text</ns1:self-uri>
+
+
+            <ns1:self-uri content-type="application/pdf" ns3:href="https://www.numdam.org/item/MSH_1994__126__5_0.pdf">Full (PDF)</ns1:self-uri>
+
+
+
+            <ns1:self-uri content-type="image/x.djvu" ns3:href="https://www.numdam.org/item/MSH_1994__126__5_0.djvu">Full (DJVU)</ns1:self-uri>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</ns1:article-meta>
+</ns1:front>
+
+
+ <ns1:back>
+
+
+
+
+
+
+ </ns1:back>
+
+
+
+</ns1:article>
+
+
+</ns0:metadata>
+
+    </ns0:record>

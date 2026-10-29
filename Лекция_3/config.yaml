@@ -5,7 +5,7 @@
 topics:
   - "medical multi-agent"
 
-# Подключённые источники поиска (по умолчанию). Доступно: archive, arxiv
+# Подключённые источники поиска (по умолчанию). Доступно: archive, arxiv, numdam
 sources:
   - "archive"
   - "arxiv"
@@ -43,3 +43,11 @@ email:
 
 # Optional: maximum number of items to keep in history to avoid repeats
 history_size: 1000
+
+# NUMDAM: сохранённые метаданные и локальный лексический поиск BM25.
+numdam:
+  database: data/numdam.sqlite3
+  bm25_weights:
+    title: 5.0
+    abstract: 1.0
+    keywords: 2.0

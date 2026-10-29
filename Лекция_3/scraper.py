@@ -10,11 +10,13 @@ SOURCE_NAME и функцией fetch(topics, rows) и зарегистриру�
 """
 
 import logging
+import math
 from datetime import date
 from typing import Dict, List, Optional
 
 import archive_agent
 import arxiv_agent
+import numdam_agent
 from utils import load_config, get_history, update_history, resolve_date_range
 from validator import validate_item  # валидатор релевантности
 
@@ -24,6 +26,7 @@ logger = logging.getLogger("archiv_tracker.scraper")
 SOURCES = {
     archive_agent.SOURCE_ID: archive_agent,
     arxiv_agent.SOURCE_ID: arxiv_agent,
+    numdam_agent.SOURCE_ID: numdam_agent,
 }
 # Человекочитаемые названия источников (для интерфейса)
 SOURCE_NAMES = {sid: mod.SOURCE_NAME for sid, mod in SOURCES.items()}
@@ -37,6 +40,7 @@ def get_new_items(
     save_history: bool = True,
     date_from: Optional[date] = None,
     date_to: Optional[date] = None,
+    numdam_options: Optional[Dict] = None,
 ) -> List[Dict]:
     """Вернуть новые релевантные записи из всех подключённых источников.
 
@@ -48,6 +52,7 @@ def get_new_items(
     date_from, date_to – включительные границы дат (по умолчанию последняя неделя).
     """
     cfg = load_config()
+    get_new_items.last_errors = []
     if topics is None:
         topics = cfg.get("topics", [])
     if sources is None:
@@ -73,11 +78,15 @@ def get_new_items(
             continue
         logger.info(f"━━━━━━━━ Источник: {agent.SOURCE_NAME} ━━━━━━━━")
         try:
-            items = agent.fetch(
-                topics, rows=rows, date_from=date_from, date_to=date_to,
-            )
+            if sid == "numdam":
+                items = agent.fetch(topics, rows=rows, exclude_ids=history, **(numdam_options or {}))
+            else:
+                items = agent.fetch(
+                    topics, rows=rows, date_from=date_from, date_to=date_to,
+                )
         except Exception as e:
             logger.error(f"❗ {agent.SOURCE_NAME}: ошибка запроса – {e}")
+            get_new_items.last_errors.append(f"{agent.SOURCE_NAME}: {e}")
             continue
 
         accepted = skipped = rejected = 0
@@ -88,7 +97,15 @@ def get_new_items(
                 logger.info(f"⏭ [{n}/{len(items)}] {it['identifier']}: уже в истории – пропуск")
                 continue
             logger.info(f"[{n}/{len(items)}] «{it['title'][:90]}»")
-            if validate_item(it, topics):
+            if sid == "numdam":
+                # FTS already matches and ranks metadata; the all-words regex would discard valid hits.
+                score = it.get("bm25_score")
+                valid = (it.get("source") == "numdam" and it.get("identifier", "").startswith("numdam:")
+                         and bool(it.get("title")) and bool(it.get("url"))
+                         and isinstance(score, (int, float)) and math.isfinite(score) and score >= 0)
+            else:
+                valid = validate_item(it, topics)
+            if valid:
                 new_items.append(it)
                 accepted += 1
             else:

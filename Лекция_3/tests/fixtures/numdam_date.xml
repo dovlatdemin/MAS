@@ -1,0 +1,53 @@
+<ns0:record xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns0="http://www.openarchives.org/OAI/2.0/" xmlns:ns1="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ns0:header>
+    <ns0:identifier>oai:numdam.org:MSH_1994__125__5_0</ns0:identifier>
+    <ns0:datestamp>2025-07-21</ns0:datestamp>
+    <ns0:setSpec>MSH</ns0:setSpec>
+
+</ns0:header>
+
+<ns0:metadata>
+    <ns1:dc xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+
+
+            <dc:creator>Pichon, Emmanuel</dc:creator>
+
+
+
+            <dc:creator xml:id="https://www.idref.fr/057147248">Lenca, Philippe</dc:creator>
+
+
+
+            <dc:creator>Guillet, Fabrice</dc:creator>
+
+
+
+            <dc:creator>Wang, Jian Wei</dc:creator>
+
+
+    <dc:title>Un algorithme de partition d'un produit direct d'ordres totaux en un nombre minimum de chaînes</dc:title>
+    <dc:language>fr</dc:language>
+    <dc:date>1994</dc:date>
+    <dc:type>Text</dc:type>
+    <dc:format>application/pdf</dc:format>
+    <dc:format>image/vnd.djvu</dc:format>
+    <dc:identifier>MSH_1994__125__5_0</dc:identifier>
+    <dc:identifier>https://www.numdam.org/item/MSH_1994__125__5_0/</dc:identifier>
+    <dc:identifier>oai:numdam.org:MSH_1994__125__5_0</dc:identifier>
+    <dc:identifier>citation: Mathématiques informatique et sciences humaines, 125 (1994) p 5-15</dc:identifier>
+
+
+        <dc:identifier>MR 1281944</dc:identifier>
+
+
+        <dc:identifier>ZBL 0802.06001</dc:identifier>
+
+
+        <dc:relation>0995-2314</dc:relation>
+
+    </ns1:dc>
+</ns0:metadata>
+
+
+
+     </ns0:record>

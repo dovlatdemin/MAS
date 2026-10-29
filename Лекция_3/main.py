@@ -85,6 +85,7 @@ def process_items(
     send: Optional[bool] = None,
     date_from: Optional[date] = None,
     date_to: Optional[date] = None,
+    numdam_options: Optional[Dict] = None,
 ) -> List[Dict]:
     """Основной цикл обработки – вызывается планировщиком и панелью Streamlit.
 
@@ -107,11 +108,9 @@ def process_items(
     engine = normalize_engine(engine if engine is not None else cfg.get("summarizer"))
     if engine != "sumy" and llm is None:
         llm = resolve_llm(cfg, engine)
-    llm_notice = llm_unavailable_message(llm) if engine != "sumy" else None
-    if llm_notice:
-        logger.warning(llm_notice)
-        engine = "sumy"
-    process_items.last_llm_notice = llm_notice
+    process_items.last_llm_notice = None
+    process_items.last_source_errors = []
+    llm_checked = False
     if send is None:
         send = bool(cfg.get("send_email", False))
     email_cfg = cfg.get("email", {})
@@ -136,7 +135,9 @@ def process_items(
         topics=topics, sources=sources, rows=rows,
         skip_seen=skip_seen, save_history=save_history,
         date_from=date_from, date_to=date_to,
+        numdam_options=numdam_options,
     )
+    process_items.last_source_errors = getattr(get_new_items, "last_errors", [])
     results: List[Dict] = []
     if not new_items:
         logger.info(f"⏹ Новых публикаций нет. Цикл завершён за {time.time() - t0:.1f} с")
@@ -149,7 +150,13 @@ def process_items(
         result = dict(item, summary="", status="")
 
         abstract = item.get("abstract") or ""
-        if len(abstract) >= 200:
+        if item.get("source") == "numdam":
+            raw_text = abstract[:text_limit]
+            if not raw_text.strip():
+                result["status"] = "Аннотация отсутствует — резюме недоступно"
+                results.append(result)
+                continue
+        elif len(abstract) >= 200:
             raw_text = abstract[:text_limit]
             logger.info(f"   Текст: аннотация из метаданных, {len(raw_text)} символов")
         else:
@@ -164,15 +171,28 @@ def process_items(
             continue
 
         try:
-            summary = summarize(
-                raw_text, max_sentences=max_sentences, engine=engine, llm=llm,
-            )
-        except LlmUnavailable as exc:
-            if not process_items.last_llm_notice:
-                process_items.last_llm_notice = exc.message
-                logger.warning(exc.message)
-            engine = "sumy"
-            summary = summarize(raw_text, max_sentences=max_sentences, engine="sumy")
+            if engine != "sumy" and not llm_checked:
+                llm_checked = True
+                notice = llm_unavailable_message(llm)
+                if notice:
+                    process_items.last_llm_notice = notice
+                    logger.warning(notice)
+                    engine = "sumy"
+            try:
+                summary = summarize(
+                    raw_text, max_sentences=max_sentences, engine=engine, llm=llm,
+                )
+            except LlmUnavailable as exc:
+                if not process_items.last_llm_notice:
+                    process_items.last_llm_notice = exc.message
+                    logger.warning(exc.message)
+                engine = "sumy"
+                summary = summarize(raw_text, max_sentences=max_sentences, engine="sumy")
+        except Exception as exc:
+            logger.warning("Не удалось составить резюме: %s", exc)
+            result["status"] = f"Резюме недоступно: {exc}"
+            results.append(result)
+            continue
         result["summary"] = summary
         logger.info(f"   ✍️ Резюме готово: {len(summary)} символов")
         if send:
